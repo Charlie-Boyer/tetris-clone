@@ -9,43 +9,22 @@ div {
 }
 
 .app {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  max-width: fit-content;
+  margin: auto;
 }
 
-.board {
-  flex-wrap: wrap;
-  border:none;
-}
-
-
-.cell0, .cell1, .cell2, .cell3{
+.cell{
   padding: 2px;
   border:none;
   background-color: gray;
   display: inline-block;
   width: 20px;
   height: 20px;
-  font-size: xx-small;
 }
 
-.cell0 {
 
-  background-color: gray;
-}
+.cell.on {
 
-.cell1 {
-
-  background-color: palevioletred;
-}
-
-.cell2 {
-
-  background-color: greenyellow;
-}
-
-.cell3 {
-
-  background-color: blue;
+  background-color: yellowgreen;
+  border: 1px solid black;
 }
