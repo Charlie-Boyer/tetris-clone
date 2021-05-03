@@ -7,9 +7,9 @@ function App() {
   const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
   const [piece, setPiece] = useState([
     { x: 4, y: 0 },
-    { x: 3, y: 0 },
     { x: 4, y: 1 },
-    { x: 5, y: 0 }
+    { x: 5, y: 0 },
+    { x: 3, y: 1 }
   ])
 
 
@@ -42,6 +42,8 @@ function App() {
 
   }, [piece])
 
+
+
   useEffect(() => {
 
     function handleKeyDown(e) {
@@ -52,25 +54,18 @@ function App() {
         const newPiece = [...piece]
 
         for (let i = 0; i < currPiece.length; i++) {
+
+          // rotation center
           if (i == 0) {
             continue
           }
-          if (currPiece[i].y == currPiece[0].y) {
-            let x = currPiece[0].x
+
+          // parts to rotate
+            let x = currPiece[0].x + (currPiece[i].y - currPiece[0].y)
             let y = currPiece[0].y - (currPiece[i].x - currPiece[0].x)
             newPiece[i].x = x
             newPiece[i].y = y
-          }
-          else {
-            let x = currPiece[0].x + (currPiece[i].y - currPiece[0].y)
-            let y = currPiece[0].y
-            newPiece[i].x = x
-            newPiece[i].y = y
-          }
         }
-
-
-
         setPiece(currPiece)
       }
 
