@@ -7,7 +7,7 @@ function App() {
   const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
 
   function newPiece() {
-    let key = Math.floor(Math.random() * 4)
+    let key = Math.floor(Math.random() * 5)
     switch (key) {
       case 0:
         return [
@@ -53,6 +53,8 @@ function App() {
 
 
 
+  
+
   useEffect(() => {
     const interval = setInterval(() => {
 
@@ -69,6 +71,8 @@ function App() {
 
 
 
+  
+
 
 
 
@@ -76,9 +80,11 @@ function App() {
 
     const currBoard = [...baseBoard]
 
+
+
     if (piece.find(e => e.y >= 20) || piece.find(e => currBoard[e.y][e.x] == 1) ) {
-      setBaseBoard(board)
       setPiece(newPiece)
+      setBaseBoard(board)
 
     }
 
@@ -90,7 +96,6 @@ function App() {
       })
       setBoard(currBoard)
     }
-
 
   }, [piece])
 
