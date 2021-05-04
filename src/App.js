@@ -5,12 +5,52 @@ function App() {
 
   const [board, setBoard] = useState(new Array(20).fill('0000000000'))
   const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
-  const [piece, setPiece] = useState([
-    { x: 4, y: 0 },
-    { x: 4, y: 1 },
-    { x: 5, y: 0 },
-    { x: 3, y: 1 }
-  ])
+
+  function newPiece() {
+    let key = Math.floor(Math.random() * 4)
+    switch (key) {
+      case 0:
+        return [
+          { x: 4, y: 0 },
+          { x: 4, y: 1 },
+          { x: 5, y: 0 },
+          { x: 3, y: 1 }
+        ]
+      case 1:
+        return [
+          { x: 4, y: 0 },
+          { x: 5, y: 0 },
+          { x: 4, y: 1 },
+          { x: 5, y: 1 }
+        ]
+      case 2:
+        return [
+          { x: 4, y: 0 },
+          { x: 5, y: 0 },
+          { x: 3, y: 0 },
+          { x: 3, y: 1 }
+        ]
+      case 3:
+        return [
+          { x: 4, y: 0 },
+          { x: 5, y: 0 },
+          { x: 3, y: 0 },
+          { x: 4, y: 1 }
+        ]
+      case 4:
+        return [
+          { x: 4, y: 0 },
+          { x: 5, y: 0 },
+          { x: 3, y: 0 },
+          { x: 2, y: 0 }
+        ]
+      default:
+        break;
+    }
+  }
+
+  const [piece, setPiece] = useState(newPiece)
+
 
 
   useEffect(() => {
@@ -25,28 +65,47 @@ function App() {
 
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [baseBoard]);
+
+
+
+
 
 
   useEffect(() => {
 
     const currBoard = [...baseBoard]
 
-    piece.forEach((e) => {
-      let cell = currBoard[e.y].split('')
-      cell[e.x] = 1
-      currBoard[e.y] = cell.join('')
-    })
+    if (piece.find(e => e.y >= 20) || piece.find(e => currBoard[e.y][e.x] == 1) ) {
+      setBaseBoard(board)
+      setPiece(newPiece)
 
-    setBoard(currBoard)
+    }
+
+    else {
+      piece.forEach((e) => {
+        let cell = currBoard[e.y].split('')
+        cell[e.x] = 1
+        currBoard[e.y] = cell.join('')
+      })
+      setBoard(currBoard)
+    }
+
 
   }, [piece])
+
+
+
+
+
+
 
 
 
   useEffect(() => {
 
     function handleKeyDown(e) {
+
 
       // rotation counter clockwise
       if (e.code == "Space") {
@@ -61,10 +120,10 @@ function App() {
           }
 
           // parts to rotate
-            let x = currPiece[0].x + (currPiece[i].y - currPiece[0].y)
-            let y = currPiece[0].y - (currPiece[i].x - currPiece[0].x)
-            newPiece[i].x = x
-            newPiece[i].y = y
+          let x = currPiece[0].x + (currPiece[i].y - currPiece[0].y)
+          let y = currPiece[0].y - (currPiece[i].x - currPiece[0].x)
+          newPiece[i].x = x
+          newPiece[i].y = y
         }
         setPiece(currPiece)
       }
@@ -79,30 +138,35 @@ function App() {
       }
 
       if (e.code == "ArrowLeft") {
+
+
         const currPiece = [...piece]
-        currPiece.forEach((e) => {
-          e.x--
-        })
+
+        if (!currPiece.find(e => e.x == 0)) {
+          currPiece.forEach((e) => {
+            e.x--
+          })
+        }
 
         setPiece(currPiece)
       }
 
       if (e.code == "ArrowRight") {
         const currPiece = [...piece]
-        currPiece.forEach((e) => {
-          e.x++
-        })
 
+        if (!currPiece.find(e => e.x == 9)) {
+          currPiece.forEach((e) => {
+            e.x++
+          })
+        }
         setPiece(currPiece)
       }
     }
-
     window.addEventListener('keydown', handleKeyDown);
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [piece]);
 
 
 
