@@ -7,6 +7,7 @@ function App() {
   const [piece, setPiece] = useState(newPiece)
   const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
   const [land, setLand] = useState(1)
+  const [speed, setSpeed] = useState(1000)
 
   function newPiece() {
     let key = Math.floor(Math.random() * 5)
@@ -76,12 +77,7 @@ function App() {
     }
 
     if (e.code == "ArrowDown") {
-      const currPiece = [...piece]
-      currPiece.forEach((e) => {
-        e.y++
-      })
-
-      setPiece(currPiece)
+      setSpeed(50)
     }
 
     if (e.code == "ArrowLeft") {
@@ -139,6 +135,9 @@ function App() {
     console.log(land)
 
     window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', () => {
+      setSpeed(1000)
+    })
 
     const interval = setInterval(() => {
       const currPiece = [...piece]
@@ -146,14 +145,14 @@ function App() {
         e.y++
       })
       setPiece(currPiece)
-    }, 1000)
+    }, speed)
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
     }
 
-  }, [land])
+  }, [land, speed])
 
   // const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
 
