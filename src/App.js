@@ -6,7 +6,7 @@ function App() {
   const [board, setBoard] = useState(new Array(20).fill('0000000000'))
   const [piece, setPiece] = useState(newPiece)
   const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
-  const [land, setLand] = useState(1)
+  const [isLanded, setIsLanded] = useState(false)
   const [speed, setSpeed] = useState(1000)
 
   function newPiece() {
@@ -54,6 +54,7 @@ function App() {
 
   function handleKeyDown(e) {
 
+    const currBoard = [...baseBoard]
 
     // rotation counter clockwise
     if (e.code == "Space") {
@@ -77,6 +78,7 @@ function App() {
     }
 
     if (e.code == "ArrowDown") {
+    
       setSpeed(50)
     }
 
@@ -106,183 +108,80 @@ function App() {
     }
   }
 
+  function handleKeyUp() {
+    setSpeed(1000)
+  }
 
   useEffect(() => {
 
     const currBoard = [...baseBoard]
 
-    
     if (piece.find(e => e.y >= 19) || piece.find(e => currBoard[e.y][e.x] == 1)) {
-      setPiece(newPiece)
-      setBaseBoard(board)
-      setLand(land + 1)
-    }
-    
-    piece.forEach((e) => {
-      let cell = currBoard[e.y].split('')
-      cell[e.x] = 1
-      currBoard[e.y] = cell.join('')
-    })
-    
-    setBoard(currBoard)
-    
-  }, [piece])
+      setIsLanded(true)
 
+
+
+
+      const promise1 = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve('foo');
+        }, 1000);
+      });
+
+      promise1.then((value) => {
+        setBaseBoard(board)
+        setPiece(newPiece)
+        setIsLanded(false)
+      });
+
+
+
+
+    }
+    else {
+      piece.forEach((e) => {
+        let cell = currBoard[e.y].split('')
+        cell[e.x] = 1
+        currBoard[e.y] = cell.join('')
+      })
   
+      setBoard(currBoard)
+
+    }
+
+  }, [piece])
 
   useEffect(() => {
 
-    console.log(land)
+    const currBoard = [...baseBoard]
 
     window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('keyup', () => {
-      setSpeed(1000)
-    })
+    window.addEventListener('keyup', handleKeyUp)
 
-    const interval = setInterval(() => {
-      const currPiece = [...piece]
-      currPiece.forEach((e) => {
-        e.y++
-      })
-      setPiece(currPiece)
-    }, speed)
+    let interval = null
+    if (!isLanded) {
+
+      interval = setInterval(() => {
+        const currPiece = [...piece]
+        currPiece.forEach((e) => {
+          e.y++
+        })
+
+        setPiece(currPiece)
+      }, speed)
+
+    }
+
+
+
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyUp);
     }
 
-  }, [land, speed])
-
-  // const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
-
-
-  // const [piece, setPiece] = useState(newPiece)
-
-
-
-
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-
-  //     const currPiece = [...piece]
-  //     currPiece.forEach((e) => {
-  //       e.y++
-  //     })
-
-  //     setPiece(currPiece)
-
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, [baseBoard]);
-
-
-
-
-
-
-
-
-  // useEffect(() => {
-
-  //   const currBoard = [...baseBoard]
-
-
-
-  //   if (piece.find(e => e.y >= 20) || piece.find(e => currBoard[e.y][e.x] == 1)) {
-  //     setPiece(newPiece)
-  //     setBaseBoard(board)
-
-  //   }
-
-  //   else {
-  //     piece.forEach((e) => {
-  //       let cell = currBoard[e.y].split('')
-  //       cell[e.x] = 1
-  //       currBoard[e.y] = cell.join('')
-  //     })
-  //     setBoard(currBoard)
-  //   }
-
-  // }, [piece])
-
-
-
-
-
-
-
-
-
-  // useEffect(() => {
-
-  //   function handleKeyDown(e) {
-
-
-  //     // rotation counter clockwise
-  //     if (e.code == "Space") {
-  //       const currPiece = [...piece]
-  //       const newPiece = [...piece]
-
-  //       for (let i = 0; i < currPiece.length; i++) {
-
-  //         // rotation center
-  //         if (i == 0) {
-  //           continue
-  //         }
-
-  //         // parts to rotate
-  //         let x = currPiece[0].x + (currPiece[i].y - currPiece[0].y)
-  //         let y = currPiece[0].y - (currPiece[i].x - currPiece[0].x)
-  //         newPiece[i].x = x
-  //         newPiece[i].y = y
-  //       }
-  //       setPiece(currPiece)
-  //     }
-
-  //     if (e.code == "ArrowDown") {
-  //       const currPiece = [...piece]
-  //       currPiece.forEach((e) => {
-  //         e.y++
-  //       })
-
-  //       setPiece(currPiece)
-  //     }
-
-  //     if (e.code == "ArrowLeft") {
-
-
-  //       const currPiece = [...piece]
-
-  //       if (!currPiece.find(e => e.x == 0)) {
-  //         currPiece.forEach((e) => {
-  //           e.x--
-  //         })
-  //       }
-
-  //       setPiece(currPiece)
-  //     }
-
-  //     if (e.code == "ArrowRight") {
-  //       const currPiece = [...piece]
-
-  //       if (!currPiece.find(e => e.x == 9)) {
-  //         currPiece.forEach((e) => {
-  //           e.x++
-  //         })
-  //       }
-  //       setPiece(currPiece)
-  //     }
-  //   }
-  //   window.addEventListener('keydown', handleKeyDown);
-  //   return () => {
-  //     window.removeEventListener('keydown', handleKeyDown);
-  //   };
-  // }, [piece]);
-
-
-
+  }, [isLanded, speed])
 
 
   return (
