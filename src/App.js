@@ -8,6 +8,7 @@ function App() {
   const [baseBoard, setBaseBoard] = useState(new Array(20).fill('0000000000'))
   const [isLanded, setIsLanded] = useState(false)
   const [speed, setSpeed] = useState(1000)
+  const [hasLines, setHasLines] = useState(0)
 
   function newPiece() {
     let key = Math.floor(Math.random() * 5)
@@ -112,33 +113,49 @@ function App() {
     setSpeed(1000)
   }
 
+  /* delete lines  */ 
+  useEffect(() => {
+
+    console.log('has lines')
+    const currBoard = [...baseBoard]
+    const tempBoard = [...currBoard]
+    currBoard.forEach((e, i) => {
+      if(e == '1111111111') {
+        tempBoard.splice(i, 1, '2222222222')
+      }
+
+      if(e == '2222222222') {
+        tempBoard.splice(i, 1)
+        tempBoard.unshift('0000000000')
+      }
+
+    })
+ 
+    setBaseBoard(tempBoard)
+    setIsLanded(false)
+  
+  }, [hasLines])
+
+
+  /* Render  */ 
   useEffect(() => {
 
     const currBoard = [...baseBoard]
 
+   
+    if(currBoard.includes('1111111111') || currBoard.includes('2222222222') ) {
+      setHasLines(hasLines + 1)
+    }
+  
+    
     if (piece.find(e => e.y >= 19) || piece.find(e => currBoard[e.y][e.x] == 1)) {
+
+      setPiece(newPiece)
+      setBaseBoard(board)
       setIsLanded(true)
-
-
-
-
-      const promise1 = new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve('foo');
-        }, 1000);
-      });
-
-      promise1.then((value) => {
-        setBaseBoard(board)
-        setPiece(newPiece)
-        setIsLanded(false)
-      });
-
-
-
-
     }
     else {
+      setIsLanded(false)
       piece.forEach((e) => {
         let cell = currBoard[e.y].split('')
         cell[e.x] = 1
@@ -151,10 +168,10 @@ function App() {
 
   }, [piece])
 
+  /* Controls  */ 
   useEffect(() => {
 
     const currBoard = [...baseBoard]
-
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
 
@@ -172,9 +189,6 @@ function App() {
 
     }
 
-
-
-
     return () => {
       clearInterval(interval);
       window.removeEventListener('keydown', handleKeyDown);
@@ -188,7 +202,7 @@ function App() {
     <div className="app">
       {board.map((cell) => (
         <div className="row">
-          {cell.split('').map((e) => <div className={e == 1 ? "cell on" : "cell"}></div>)}
+          {cell.split('').map((e) => <div className={`cell state${e}`}></div>)}
         </div>
       ))}
     </div>

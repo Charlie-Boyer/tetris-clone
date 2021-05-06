@@ -23,8 +23,14 @@ div {
 }
 
 
-.cell.on {
+.cell.state1 {
 
   background-color: yellowgreen;
+  border: 1px solid black;
+}
+
+.cell.state2 {
+
+  background-color: rgb(97, 50, 205);
   border: 1px solid black;
 }
