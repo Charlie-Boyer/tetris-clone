@@ -9,24 +9,32 @@ div {
 }
 
 .app {
-  max-width: fit-content;
   margin: auto;
+  margin-top: 5vh;
+  height: 90vh;
+  width: 45vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  height: 100%;
 }
 
 .cell{
+  width: 100%;
+  border: 1px solid gray;
   padding: 2px;
-  border:none;
-  background-color: gray;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
+  background-color: black;
+
 }
 
 
 .cell.state1 {
 
   background-color: yellowgreen;
-  border: 1px solid black;
+ 
 }
 
 .cell.state2 {
