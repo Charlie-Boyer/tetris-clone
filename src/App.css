@@ -8,7 +8,7 @@ div {
   font-size: 0;
 }
 
-.app {
+.board {
   margin: auto;
   margin-top: 5vh;
   height: 90vh;
@@ -24,21 +24,40 @@ div {
 
 .cell{
   width: 100%;
-  border: 1px solid gray;
+  border: 1px dotted gray;
   padding: 2px;
   background-color: black;
 
 }
 
+.row:hover {
+  height: 50%;
+}
 
 .cell.state1 {
 
+  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
   background-color: yellowgreen;
  
 }
 
 .cell.state2 {
 
+  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
   background-color: rgb(97, 50, 205);
   border: 1px solid black;
+}
+
+.cell.state3 {
+
+
+  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
+
+  
+
+
+}
+
+.infos {
+  font-size: 1rem;
 }
