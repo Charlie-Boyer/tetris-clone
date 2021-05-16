@@ -9,7 +9,6 @@ function App() {
   const [board, setBoard] = useState(new Array(21).fill('0000000000').fill('1111111111', 20))
   const [baseBoard, setBaseBoard] = useState(new Array(21).fill('0000000000').fill('1111111111', 20))
   const [speed, setSpeed] = useState(1000)
-  const initialPiece = [{ x: 0, y: 0 }, { x: 1, y: 0 }]
   const [piece, setPiece] = useReducer(pieceReducer, initialState())
 
 
@@ -17,7 +16,7 @@ function App() {
     let coordinates = []
     pattern.forEach((e, i) => {
       e.split('').map((el, il) => {
-        if (el == 2) {
+        if (el != 0) {
           coordinates.push({ x: x + il, y: y + i })
         }
       })
@@ -35,13 +34,13 @@ function App() {
 
 
     const pattern = [
-      ['0000', '0220', '0220', '0000'],
-      ['0000', '2222', '0000', '0000'],
-      ['002', '222', '000'],
-      ['200', '222', '000'],
-      ['022', '220', '000'],
-      ['220', '022', '000'],
-      ['020', '222', '000']
+      ['0000', '0oo0', '0oo0', '0000'],
+      ['0000', 'iiii', '0000', '0000'],
+      ['00l', 'lll', '000'],
+      ['j00', 'jjj', '000'],
+      ['0ss', 'ss0', '000'],
+      ['zz0', '0zz', '000'],
+      ['0t0', 'ttt', '000']
     ]
 
     let newPiece = {
@@ -51,6 +50,7 @@ function App() {
     }
 
     newPiece.pattern = pieceGenerator(pattern)
+    newPiece.class = [...newPiece.pattern.join('')].find(e => e != 0)
     newPiece.global = { x: 3, y: 0 }
     newPiece.parts = getCoordinatesFromPattern(
       newPiece.pattern,
@@ -101,13 +101,14 @@ function App() {
 
 
     let interval = setInterval(() => {
-      if (boardRef.current.piece.parts.find((e) => boardRef.current.board[e.y + 1][e.x] == 1   )) {
+      if (boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y + 1][e.x] != 0)) {
 
+        let currBoard = [...boardRef.current.board]
 
-        let currBoard = [...boardRef.current.board.map((e) => e.replace(/2/g, 1))]
+        console.log(boardRef.current.piece.parts, boardRef.current.baseBoard)
 
         currBoard.forEach((e, i) => {
-          if (e == '1111111111' && i != 20) {
+          if (!e.includes('0') && i != 20) {
             currBoard.splice(i, 1)
             currBoard.unshift('0000000000')
           }
@@ -117,8 +118,6 @@ function App() {
       }
       else {
         setPiece({ type: 'down' })
-
-
       }
     }, speed)
 
@@ -135,77 +134,42 @@ function App() {
             setSpeed(50)
           }
           break;
+
         case 'ArrowLeft':
-          if (boardRef.current.piece.parts.find((e) => e.x == 0) || boardRef.current.piece.parts.find((e) => boardRef.current.board[e.y][e.x - 1] == 1)) {
+          if (boardRef.current.piece.parts.find((e) => e.x < 0) || boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y][e.x - 1] != 0)) {
             return
           } else {
             setPiece({ type: 'left' })
           }
-          break
+          break;
+
         case 'ArrowRight':
-          if (boardRef.current.piece.parts.find((e) => e.x == 9) || boardRef.current.piece.parts.find((e) => boardRef.current.board[e.y][e.x + 1] == 1)) {
+          if (boardRef.current.piece.parts.find((e) => e.x > 9) || boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y][e.x + 1] != 0)) {
             return
           } else {
             setPiece({ type: 'right' })
           }
           break;
+          
         case 'KeyW':
-          let newPattern = boardRef.current.piece.pattern.map((e, i) => boardRef.current.piece.pattern.map((el) => el[(el.length - 1) - i]).join(''));
-          let coordinates = getCoordinatesFromPattern(newPattern, boardRef.current.piece.global.x, boardRef.current.piece.global.y)
-
-          function checkEdges(newCoordinates) {
-            let finalCoordinates = [...newCoordinates]
-            let range = 1
-            while (finalCoordinates.find((e) => e.x > 9) && range < 3) {
-              finalCoordinates = [...newCoordinates.map((e) => ({ ...e, x: e.x - range }))]
-              range++
-            }
-            while (finalCoordinates.find((e) => e.x < 0) && range < 3) {
-              finalCoordinates = [...newCoordinates.map((e) => ({ ...e, x: e.x + range }))]
-              range++
-            }
-
-            if (finalCoordinates.find((e) => e.x > 9) || finalCoordinates.find((e) => e.x < 0)) {
-              return false
-            }
-            else {
-              return finalCoordinates
-            }
+          if (e.repeat) return
+          {
+            let newPattern = boardRef.current.piece.pattern.map((e, i) => boardRef.current.piece.pattern.map((el) => el[(el.length - 1) - i]).join(''));
+            let coordinates = getCoordinatesFromPattern(newPattern, boardRef.current.piece.global.x, boardRef.current.piece.global.y)
+            if (coordinates.find((e) => e.x > 9) || coordinates.find((e) => e.x < 0)) return
+            setPiece({ type: 'rotate', data: { newPattern, coordinates: coordinates } })
           }
+          break;
 
-
-          console.log(checkEdges(coordinates))
-
-          // while (tempCoordinates.find((e) => e.x < 0)) {
-          //   tempCoordinates = [...coordinates.map((e) => ({ ...e, x: e.x + 1 }))]
-          // }
-
-          // let key = 0
-          // while (coordinates.find((e) => boardRef.current.board[e.y][e.x] == 1)) {
-
-          //   switch (key) {
-          //     case 0:
-          //       coordinates = [...coordinates.map((e) => ({ ...e, x: e.x + 1 }))]
-          //       break;
-          //     case 1:
-          //       coordinates = [...coordinates.map((e) => ({ ...e, x: e.x - 2 }))]
-          //       break;
-          //     case 1:
-          //       coordinates = [...coordinates.map((e) => ({ ...e, x: e.x + 3 }))]
-          //       break;
-          //     case 1:
-          //       coordinates = [...coordinates.map((e) => ({ ...e, x: e.x - 4 }))]
-          //       break;
-
-          //     default:
-          //       break;
-          //   }
-          // }
-
-          if (checkEdges(coordinates)) {
-            setPiece({ type: 'rotate', data: { newPattern, coordinates: checkEdges(coordinates) } })
-
+          case 'ArrowUp':
+          if (e.repeat) return
+          {
+            let newPattern = boardRef.current.piece.pattern.map((e, i) => boardRef.current.piece.pattern.map((el, y) => boardRef.current.piece.pattern[(boardRef.current.piece.pattern.length - 1) - y][i]).join(''));
+            let coordinates = getCoordinatesFromPattern(newPattern, boardRef.current.piece.global.x, boardRef.current.piece.global.y)
+            if (coordinates.find((e) => e.x > 9) || coordinates.find((e) => e.x < 0)) return
+            setPiece({ type: 'rotate', data: { newPattern, coordinates: coordinates } })
           }
+          break;
       }
     }
 
@@ -220,33 +184,30 @@ function App() {
   // render  
   useEffect(() => {
     let currBoard = [...baseBoard]
-    let shadowPiece = [...piece.parts.map(e => ({...e}))]
+    let shadowPiece = [...piece.parts.map(e => ({ ...e }))]
 
-    while( !shadowPiece.find((e) => currBoard[e.y + 1][e.x] == 1 )  ) {
+    while (!shadowPiece.find((e) => currBoard[e.y + 1][e.x] != 0)) {
       shadowPiece = [...shadowPiece.map((e) => ({ ...e, y: e.y + 1 }))]
     }
-    
+
     shadowPiece.forEach((e, i) => {
       let cell = currBoard[e.y].split('')
-      cell[e.x] = 3
-      currBoard[e.y] = cell.join('') 
+      cell[e.x] = piece.class.toUpperCase()
+      currBoard[e.y] = cell.join('')
     })
     piece.parts.forEach((e, i) => {
       let cell = currBoard[e.y].split('')
-      cell[e.x] = 2
-      currBoard[e.y] = cell.join('') 
+      cell[e.x] = piece.class
+      currBoard[e.y] = cell.join('')
     })
 
-    
-
-
     setBoard([...currBoard])
-
 
     //referencing state
     boardRef.current = {
       piece: { ...piece },
-      board: [...currBoard]
+      board: [...currBoard],
+      baseBoard: [...baseBoard]
     }
   }, [piece])
 
@@ -257,7 +218,7 @@ function App() {
       <div className="board">
         {board.map((cell, i) => i != 20 && (
           <div key={uuidv4()} className="row">
-            {cell.split('').map((e) => <div key={uuidv4()} className={`cell state${e}`}></div>)}
+            {cell.split('').map((e) => <div key={uuidv4()} className={`cell ${e}-block`}></div>)}
           </div>
         ))}
       </div>
