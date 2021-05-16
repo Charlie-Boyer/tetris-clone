@@ -10,6 +10,7 @@ function App() {
   const [baseBoard, setBaseBoard] = useState(new Array(21).fill('0000000000').fill('1111111111', 20))
   const [speed, setSpeed] = useState(1000)
   const [piece, setPiece] = useReducer(pieceReducer, initialState())
+  const [rendering, setRendering] = useState(false)
 
 
   function getCoordinatesFromPattern(pattern, x, y) {
@@ -49,7 +50,6 @@ function App() {
       parts: [{ x: 0, y: 0 }]
     }
 
-    newPiece.pattern = pieceGenerator(pattern)
     newPiece.class = [...newPiece.pattern.join('')].find(e => e != 0)
     newPiece.global = { x: 3, y: 0 }
     newPiece.parts = getCoordinatesFromPattern(
@@ -65,26 +65,26 @@ function App() {
       case 'down':
         return {
           ...state,
-          global: { ...state.global, y: state.global.y++ },
-          parts: state.parts.map((e) => ({ ...e, y: e.y++ }))
+          global: { ...state.global, y: state.global.y + 1 },
+          parts: [...action.data.coordinates.map(e => ({...e}))]
         };
       case 'right':
         return {
           ...state,
-          global: { ...state.global, x: state.global.x++ },
-          parts: state.parts.map((e) => ({ ...e, x: e.x++ }))
-        };
+          global: { ...state.global, x: state.global.x + 1 },
+          parts: [...state.parts.map((e) => ({...e, x: e.x + 1 }))]
+        }
       case 'left':
         return {
           ...state,
-          global: { ...state.global, x: state.global.x-- },
-          parts: state.parts.map((e) => ({ ...e, x: e.x-- }))
+          global: { ...state.global, x: state.global.x - 1 },
+          parts: [...state.parts.map((e) => ({...e, x: e.x - 1 }))]
         };
       case 'rotate':
         return {
           ...state,
           pattern: [...action.data.newPattern],
-          parts: [...action.data.coordinates]
+          parts: [...action.data.coordinates.map(e => ({...e}))]
         };
       case 'reset':
         return initialState()
@@ -101,6 +101,7 @@ function App() {
 
 
     let interval = setInterval(() => {
+      setRendering(true)
       if (boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y + 1][e.x] != 0)) {
 
         let currBoard = [...boardRef.current.board]
@@ -117,7 +118,8 @@ function App() {
         setPiece({ type: 'reset' })
       }
       else {
-        setPiece({ type: 'down' })
+        let coordinates = boardRef.current.piece.parts.map((e) => ({ ...e, y: e.y + 1 }))
+        setPiece({ type: 'down', data: { coordinates } })
       }
     }, speed)
 
@@ -130,38 +132,52 @@ function App() {
     function handleKeyDown(e) {
       switch (e.code) {
         case 'ArrowDown':
-          if (!e.repeat) {
-            setSpeed(50)
-          }
+            if (!e.repeat) {
+              setSpeed(50)
+            }
           break;
 
         case 'ArrowLeft':
-          if (boardRef.current.piece.parts.find((e) => e.x < 0) || boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y][e.x - 1] != 0)) {
-            return
-          } else {
-            setPiece({ type: 'left' })
+          if (!rendering) {
+
+            setRendering(true)
+            if (boardRef.current.piece.parts.find((e) => e.x < 0) || boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y][e.x - 1] != 0)) {
+              return
+            } else {
+              setPiece({ type: 'left' })
+            }
           }
           break;
 
         case 'ArrowRight':
-          if (boardRef.current.piece.parts.find((e) => e.x > 9) || boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y][e.x + 1] != 0)) {
-            return
-          } else {
-            setPiece({ type: 'right' })
-          }
-          break;
-          
-        case 'KeyW':
-          if (e.repeat) return
-          {
-            let newPattern = boardRef.current.piece.pattern.map((e, i) => boardRef.current.piece.pattern.map((el) => el[(el.length - 1) - i]).join(''));
-            let coordinates = getCoordinatesFromPattern(newPattern, boardRef.current.piece.global.x, boardRef.current.piece.global.y)
-            if (coordinates.find((e) => e.x > 9) || coordinates.find((e) => e.x < 0)) return
-            setPiece({ type: 'rotate', data: { newPattern, coordinates: coordinates } })
+          if (!rendering) {
+            setRendering(true)
+            if (boardRef.current.piece.parts.find((e) => e.x > 9) || boardRef.current.piece.parts.find((e) => boardRef.current.baseBoard[e.y][e.x + 1] != 0)) {
+              return
+            } else {
+              setPiece({ type: 'right' })
+            }
+
           }
           break;
 
-          case 'ArrowUp':
+
+
+        case 'KeyW':
+          if (!rendering) {
+
+            setRendering(true)
+            if (e.repeat) return
+            {
+              let newPattern = boardRef.current.piece.pattern.map((e, i) => boardRef.current.piece.pattern.map((el) => el[(el.length - 1) - i]).join(''));
+              let coordinates = getCoordinatesFromPattern(newPattern, boardRef.current.piece.global.x, boardRef.current.piece.global.y)
+              if (coordinates.find((e) => e.x > 9) || coordinates.find((e) => e.x < 0)) return
+              setPiece({ type: 'rotate', data: { newPattern, coordinates: coordinates } })
+            }
+          }
+          break;
+
+        case 'ArrowUp':
           if (e.repeat) return
           {
             let newPattern = boardRef.current.piece.pattern.map((e, i) => boardRef.current.piece.pattern.map((el, y) => boardRef.current.piece.pattern[(boardRef.current.piece.pattern.length - 1) - y][i]).join(''));
@@ -202,7 +218,7 @@ function App() {
     })
 
     setBoard([...currBoard])
-
+    setRendering(false)
     //referencing state
     boardRef.current = {
       piece: { ...piece },
