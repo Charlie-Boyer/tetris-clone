@@ -4,12 +4,21 @@
   padding: 0;
 }
 
+body {
+  background-color: #555;
+}
+
 div {
   font-size: 0;
 }
 
-.board {
+.app {
   margin: auto;
+  width: fit-content;
+}
+
+.board {
+  background-color: #1d1d1b;
   margin-top: 5vh;
   height: 90vh;
   width: 45vh;
@@ -24,26 +33,25 @@ div {
 
 .cell{
   width: 100%;
-  border: 1px dotted gray;
   padding: 2px;
-  background-color: black;
+  background-color: transparent;
+  filter: grayscale(30%);
+  filter: contrast(70%);
 
-}
-
-.row:hover {
-  height: 50%;
 }
 
 .i-block, .I-block {
 
-  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
-  background-color: #00f0f0;
+  box-shadow: inset -3px 3px rgba(255, 255, 255, 0.5);
+  background: linear-gradient(48deg, rgba(49,173,173,1) 0%, rgba(0,240,240,1) 100%);
+
  
 }
 .j-block, .J-block {
 
-  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
-  background-color: #0000f0;
+  box-shadow: inset -3px 3px rgba(255, 255, 255, 0.5);
+  box-shadow: inset 3px 3px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(48deg, rgba(37,37,129,1) 0%, rgba(0,0,240,1) 100%);
  
 }
 .l-block, .L-block {
@@ -78,10 +86,25 @@ div {
 }
 
 .Z-block, .T-block, .S-block, .O-block, .L-block, .J-block, .I-block {
-  filter: brightness(.4);
+  opacity: .1;
+
 }
 
 
 .infos {
-  font-size: 1rem;
+  float: left;
+  margin-right: 1rem;
+  font-size: 2rem;
+  color: #ccc;
+}
+
+.xxxxxxxxxx {
+  animation: 500ms clear forwards;
+  background-color: white;
+  filter: blur(1.2rem);
+}
+
+@keyframes clear {
+  from  {height: 100%;}
+  to    {height: 0%;}
 }
