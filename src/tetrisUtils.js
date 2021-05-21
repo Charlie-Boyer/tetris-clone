@@ -21,7 +21,7 @@
       parts: [{ x: 0, y: 0 }]
     }
 
-    newPiece.class = [...newPiece.pattern.join('')].find(e => e != 0)
+    newPiece.class = [...newPiece.pattern.join('')].find(e => e !== '0')
     newPiece.global = { x: 3, y: 0 }
     newPiece.parts = createFromPattern(
       newPiece.pattern,
@@ -33,9 +33,10 @@
 
   function getCoordinatesFromPattern(pattern, x, y) {
     let coordinates = []
+
     pattern.forEach((e, i) => {
-      e.split('').map((el, il) => {
-        if (el != 0) {
+      e.split('').forEach((el, il) => {
+        if (el !== '0') {
           coordinates.push({ x: x + il, y: y + i })
         }
       })

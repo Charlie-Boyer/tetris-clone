@@ -5,7 +5,7 @@
 }
 
 body {
-  background-color: #555;
+  background-color: #161632;
 }
 
 div {
@@ -18,77 +18,63 @@ div {
 }
 
 .board {
-  background-color: #1d1d1b;
+  border: 3px solid white;
+  border-radius: 20px;
   margin-top: 5vh;
   height: 90vh;
   width: 45vh;
   display: flex;
   flex-direction: column;
-}
+  background: rgb(2,0,36);
+  background: linear-gradient(338deg, rgb(2, 1, 26) 0%, rgba(28, 28, 65, 0.816) 35%, rgba(0,212,255,1) 150%);}
 
 .row {
   display: flex;
   height: 100%;
+
 }
 
-.cell{
+.cell {
   width: 100%;
-  padding: 2px;
+  box-shadow: 1px 0px 3px 1px rgba(194,209,235,0.1);
+}
+
+[class*="block"]{
+  border-radius: 5px;
+  box-shadow: inset 3px 0px rgba(0,0,0,.3),
+  inset -3px 0px rgba(0,0,0,.3),
+  inset 0px 3px rgba(255,255,255,.5),
+  inset 0px -3px rgba(0,0,0,.6);
+  width: 100%;
   background-color: transparent;
-  filter: grayscale(30%);
-  filter: contrast(70%);
-
 }
 
-.i-block, .I-block {
 
-  box-shadow: inset -3px 3px rgba(255, 255, 255, 0.5);
-  background: linear-gradient(48deg, rgba(49,173,173,1) 0%, rgba(0,240,240,1) 100%);
-
- 
+.i-block {
+  background-color: #00d0d0;
 }
-.j-block, .J-block {
-
-  box-shadow: inset -3px 3px rgba(255, 255, 255, 0.5);
-  box-shadow: inset 3px 3px rgba(0, 0, 0, 0.5);
-  background: linear-gradient(48deg, rgba(37,37,129,1) 0%, rgba(0,0,240,1) 100%);
- 
+.j-block {
+  background-color: #0000d0;
 }
-.l-block, .L-block {
-
-  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
-  background-color: #f0a000;
- 
+.l-block {
+  background-color: #d08000;
 }
-.o-block, .O-block {
-
-  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
-  background-color: #f0f000;
- 
+.o-block {
+  background-color: #d0d000;
 }
-.s-block, .S-block {
-
-  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
-  background-color: #00f000;
- 
+.s-block {
+  background-color: #00d000;
 }
-.t-block, .T-block  {
-
-  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
-  background-color: #a000f0;
- 
+.t-block {
+  background-color: #8000d0;
 }
-.z-block, .Z-block {
-
-  box-shadow: inset 3px 3px rgba(255, 255, 255, 0.5);
-  background-color: #f00000;
- 
+.z-block {
+  background-color: #d00000;
 }
 
-.Z-block, .T-block, .S-block, .O-block, .L-block, .J-block, .I-block {
-  opacity: .1;
 
-}
+
+
 
 
 .infos {
@@ -98,13 +84,12 @@ div {
   color: #ccc;
 }
 
-.xxxxxxxxxx {
-  animation: 500ms clear forwards;
-  background-color: white;
-  filter: blur(1.2rem);
+.x-block {
+  background-color: transparent;
+  animation: clear 300ms linear forwards;
 }
 
 @keyframes clear {
-  from  {height: 100%;}
-  to    {height: 0%;}
+  from  {transform: scale(0);}
+  to    {transform: scale(1.5);}
 }
