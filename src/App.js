@@ -113,7 +113,6 @@ function App() {
           curr.shift()
           return curr
         })
-        console.log('hey')
       }
 
       if (stateRef.current.piece.parts.find((e) => e.y >= 19) || stateRef.current.piece.parts.find((e) => stateRef.current.baseBoard[e.y + 1][e.x] !== '0')) {
@@ -140,7 +139,7 @@ function App() {
       window.removeEventListener('keydown', handleKeyDown);
       clearInterval(interval);
     }
-  }, [speed, isRunning])
+  }, [speed, isRunning, pieceQueue])
 
 
   // render  
