@@ -105,8 +105,10 @@ function App() {
       })
 
       if (stateRef.current.piece.down) {
+        
         stateRef.current.piece = { ...generatePiece(getCoordinatesFromPattern, pieceQueue[1]) }
         stateRef.current.piece.down = false
+        setSpeed(1000)
         setPieceQueue(prev => {
           let curr = [...prev];
           curr.push(Math.floor(Math.random() * 7));
@@ -116,9 +118,9 @@ function App() {
       }
 
       if (stateRef.current.piece.parts.find((e) => e.y >= 19) || stateRef.current.piece.parts.find((e) => stateRef.current.baseBoard[e.y + 1][e.x] !== '0')) {
-
         stateRef.current.board.forEach((e, i) => {
           if (!e.includes('0') && i !== 20) {
+            setSpeed(300git )
             stateRef.current.board[i] = 'xxxxxxxxxx'
             setLineCount(prev => prev + 1)
           }
