@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
+import Piece from './components/Piece'
 import { useEffect, useState, useRef } from 'react';
-import { generatePiece, getCoordinatesFromPattern } from './tetrisUtils';
+import { generatePiece, getCoordinatesFromPattern, pieceQueueGenerator, piecePattern } from './tetrisUtils';
 
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
   const [rendering, setRendering] = useState(0)
   const [lineCount, setLineCount] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
+  const [pieceQueue, setPieceQueue] = useState(pieceQueueGenerator())
 
   function handleKeyUp(e) {
     if (e.code === 'ArrowDown') {
@@ -68,8 +70,9 @@ function App() {
 
   //State ref instanciation
   useEffect(() => {
+   
     stateRef.current = {
-      piece: { ...generatePiece(getCoordinatesFromPattern) },
+      piece: { ...generatePiece(getCoordinatesFromPattern, pieceQueue[0]) },
       board: new Array(21).fill('0000000000').fill('1111111111', 20),
       baseBoard: new Array(21).fill('0000000000').fill('1111111111', 20)
     }
@@ -93,6 +96,7 @@ function App() {
 
     let interval = setInterval(() => {
 
+      console.log(pieceQueue)
       stateRef.current.baseBoard.forEach((e, i) => {
         if (e === 'xxxxxxxxxx') {
           stateRef.current.baseBoard.splice(i, 1)
@@ -101,8 +105,15 @@ function App() {
       })
 
       if (stateRef.current.piece.down) {
-        stateRef.current.piece = { ...generatePiece(getCoordinatesFromPattern) }
+        stateRef.current.piece = { ...generatePiece(getCoordinatesFromPattern, pieceQueue[1]) }
         stateRef.current.piece.down = false
+        setPieceQueue(prev => {
+          let curr = [...prev];
+          curr.push(Math.floor(Math.random() * 7));
+          curr.shift()
+          return curr
+        })
+        console.log('hey')
       }
 
       if (stateRef.current.piece.parts.find((e) => e.y >= 19) || stateRef.current.piece.parts.find((e) => stateRef.current.baseBoard[e.y + 1][e.x] !== '0')) {
@@ -138,7 +149,7 @@ function App() {
     let currBoard = [...stateRef.current.baseBoard]
     let ghostPiece = [...stateRef.current.piece.parts.map(e => ({ ...e }))]
 
-    while (!ghostPiece.find((e) => currBoard[e.y + 1][e.x] !== '0' )) {
+    while (!ghostPiece.find((e) => currBoard[e.y + 1][e.x] !== '0')) {
       ghostPiece = [...ghostPiece.map((e) => ({ ...e, y: e.y + 1 }))]
     }
 
@@ -175,6 +186,8 @@ function App() {
           </div>
         ))}
       </div>
+      <Piece piece={piecePattern[pieceQueue[1]]} />
+      <Piece piece={piecePattern[pieceQueue[2]]} />
     </div>
   );
 }

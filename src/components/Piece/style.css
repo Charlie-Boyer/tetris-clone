@@ -1,0 +1,6 @@
+.piece-container {
+    height: 100px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+}

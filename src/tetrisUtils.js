@@ -1,9 +1,5 @@
 
-  function generatePiece(createFromPattern) {
-
-    function randomizer(array) {
-      return array[Math.floor(Math.random() * 7)]
-    }
+  function generatePiece(createFromPattern, index) {
 
     const pattern = [
       ['0000', '0oo0', '0oo0', '0000'],
@@ -16,7 +12,7 @@
     ]
 
     let newPiece = {
-      pattern: randomizer(pattern),
+      pattern: pattern[index],
       global: { x: 0, y: 0 },
       parts: [{ x: 0, y: 0 }]
     }
@@ -44,4 +40,17 @@
     return coordinates
   }
 
-  export { generatePiece, getCoordinatesFromPattern }
+  function pieceQueueGenerator(array) {
+    return Array.from({length: 3}, () => Math.floor(Math.random() * 7))
+  }
+
+  const piecePattern = [
+    ['0000', '0oo0', '0oo0', '0000'],
+    ['0000', 'iiii', '0000', '0000'],
+    ['00l', 'lll', '000'],
+    ['j00', 'jjj', '000'],
+    ['0ss', 'ss0', '000'],
+    ['zz0', '0zz', '000'],
+    ['0t0', 'ttt', '000']
+  ]
+  export { generatePiece, getCoordinatesFromPattern, pieceQueueGenerator, piecePattern }
