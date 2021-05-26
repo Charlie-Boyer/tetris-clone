@@ -53,4 +53,31 @@
     ['zz0', '0zz', '000'],
     ['0t0', 'ttt', '000']
   ]
-  export { generatePiece, getCoordinatesFromPattern, pieceQueueGenerator, piecePattern }
+
+
+  class Rectangle {
+    constructor(hauteur, largeur) {
+      this.hauteur = hauteur;
+      this.largeur = largeur;
+    }
+
+    piecePattern = [
+      ['0000', '0oo0', '0oo0', '0000'],
+      ['0000', 'iiii', '0000', '0000'],
+      ['00l', 'lll', '000'],
+      ['j00', 'jjj', '000'],
+      ['0ss', 'ss0', '000'],
+      ['zz0', '0zz', '000'],
+      ['0t0', 'ttt', '000']
+    ]
+  
+    get area() {
+      return this.calcArea();
+    }
+  
+    calcArea() {
+      return this.largeur * this.hauteur;
+    }
+  }
+
+  export { generatePiece, getCoordinatesFromPattern, pieceQueueGenerator, piecePattern, Rectangle }

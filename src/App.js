@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 import Piece from './components/Piece'
 import { useEffect, useState, useRef } from 'react';
-import { generatePiece, getCoordinatesFromPattern, pieceQueueGenerator, piecePattern } from './tetrisUtils';
+import { generatePiece, getCoordinatesFromPattern, pieceQueueGenerator, piecePattern, Rectangle } from './tetrisUtils';
 
 
 function App() {
@@ -14,6 +14,23 @@ function App() {
   const [lineCount, setLineCount] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [pieceQueue, setPieceQueue] = useState(pieceQueueGenerator())
+  const [altPiece, setAltPiece] = useState(null)
+  const [isDropped, setIsDropped] = useState(false)
+  const [canChange, setCanChange] = useState(true)
+
+
+
+  //State ref instanciation
+  useEffect(() => {
+
+    stateRef.current = {
+      piece: { ...generatePiece(getCoordinatesFromPattern, pieceQueue[0]) },
+      board: new Array(21).fill('0000000000').fill('1111111111', 20),
+      baseBoard: new Array(21).fill('0000000000').fill('1111111111', 20),
+      test: new Rectangle(10, 10)
+    }
+  }, [])
+
 
   function handleKeyUp(e) {
     if (e.code === 'ArrowDown') {
@@ -53,6 +70,21 @@ function App() {
         }
         break;
 
+      case 'KeyQ':
+        if (canChange) {
+          console.log(pieceQueue)
+          if (altPiece != null) {
+            stateRef.current.piece = { ...generatePiece(getCoordinatesFromPattern, altPiece) }
+          }
+          else {
+            stateRef.current.piece = { ...generatePiece(getCoordinatesFromPattern, pieceQueue[1]) }
+          }
+          setRendering(prev => prev + 1)
+   
+          setAltPiece(pieceQueue[0])
+        }
+        break;
+
       case 'ArrowUp':
         {
           let newPattern = stateRef.current.piece.pattern.map((e, i) => stateRef.current.piece.pattern.map((el, y) => stateRef.current.piece.pattern[(stateRef.current.piece.pattern.length - 1) - y][i]).join(''));
@@ -68,15 +100,7 @@ function App() {
     }
   }
 
-  //State ref instanciation
-  useEffect(() => {
-   
-    stateRef.current = {
-      piece: { ...generatePiece(getCoordinatesFromPattern, pieceQueue[0]) },
-      board: new Array(21).fill('0000000000').fill('1111111111', 20),
-      baseBoard: new Array(21).fill('0000000000').fill('1111111111', 20)
-    }
-  }, [])
+
 
 
   useEffect(() => {
@@ -96,7 +120,7 @@ function App() {
 
     let interval = setInterval(() => {
 
-      console.log(pieceQueue)
+      console.log(stateRef.current)
       stateRef.current.baseBoard.forEach((e, i) => {
         if (e === 'xxxxxxxxxx') {
           stateRef.current.baseBoard.splice(i, 1)
@@ -104,10 +128,10 @@ function App() {
         }
       })
 
-      if (stateRef.current.piece.down) {
-        
+      if (isDropped) {
+
         stateRef.current.piece = { ...generatePiece(getCoordinatesFromPattern, pieceQueue[1]) }
-        stateRef.current.piece.down = false
+        setIsDropped(false)
         setSpeed(1000)
         setPieceQueue(prev => {
           let curr = [...prev];
@@ -118,14 +142,15 @@ function App() {
       }
 
       if (stateRef.current.piece.parts.find((e) => e.y >= 19) || stateRef.current.piece.parts.find((e) => stateRef.current.baseBoard[e.y + 1][e.x] !== '0')) {
+        setCanChange(true)
         stateRef.current.board.forEach((e, i) => {
           if (!e.includes('0') && i !== 20) {
-            setSpeed(300git )
+            setSpeed(300)
             stateRef.current.board[i] = 'xxxxxxxxxx'
             setLineCount(prev => prev + 1)
           }
         })
-        stateRef.current.piece.down = true
+        setIsDropped(true)
         stateRef.current.baseBoard = [...stateRef.current.board]
         setBoard([...stateRef.current.baseBoard])
       }
@@ -141,7 +166,7 @@ function App() {
       window.removeEventListener('keydown', handleKeyDown);
       clearInterval(interval);
     }
-  }, [speed, isRunning, pieceQueue])
+  }, [speed, isRunning, pieceQueue, isDropped])
 
 
   // render  
@@ -176,6 +201,9 @@ function App() {
     <div className="app">
       <span className="infos" onClick={() => setIsRunning(!isRunning)}>{isRunning ? "Pause" : "Resume"}</span>
       <span className="infos">Score: {lineCount}</span>
+      {
+        altPiece != null && <Piece piece={piecePattern[altPiece]} />
+      }
       <div className="board">
         {board.map((cell, i) => i !== 20 && (
           <div key={uuidv4()} className={`row ${cell}`}>

@@ -7,7 +7,6 @@ function Piece({piece}) {
 
 
 
-    console.log(piece)
     return (
         <div className="piece-container">
             {piece?.map((cell, i) => (
