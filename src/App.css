@@ -18,6 +18,23 @@ div {
   display: flex;
 }
 
+.starter {
+  font-size: 1rem;
+  margin-top: 3rem;
+  cursor: pointer;
+  padding: 1rem;
+}
+
+.side {
+  width: 20vw;
+}
+
+.infos {
+  font-size: 1rem;
+  color: antiquewhite;
+
+}
+
 .board {
   border: 3px solid white;
   border-radius: 20px;
@@ -79,12 +96,6 @@ div {
 
 
 
-.infos {
-  float: left;
-  margin-right: 1rem;
-  font-size: 2rem;
-  color: #ccc;
-}
 
 .x-block {
   background-color: transparent;

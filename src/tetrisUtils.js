@@ -1,83 +1,41 @@
+const piecePattern = [
+  ['0oo0', '0oo0'],
+  ['0000', 'iiii', '0000', '0000'],
+  ['00l', 'lll', '000'],
+  ['j00', 'jjj', '000'],
+  ['0ss', 'ss0', '000'],
+  ['zz0', '0zz', '000'],
+  ['0t0', 'ttt', '000']
+]
 
-  function generatePiece(createFromPattern, index) {
 
-    const pattern = [
-      ['0000', '0oo0', '0oo0', '0000'],
-      ['0000', 'iiii', '0000', '0000'],
-      ['00l', 'lll', '000'],
-      ['j00', 'jjj', '000'],
-      ['0ss', 'ss0', '000'],
-      ['zz0', '0zz', '000'],
-      ['0t0', 'ttt', '000']
-    ]
 
-    let newPiece = {
-      pattern: pattern[index],
-      global: { x: 0, y: 0 },
-      parts: [{ x: 0, y: 0 }]
-    }
+function generatePiece(index) {
 
-    newPiece.class = [...newPiece.pattern.join('')].find(e => e !== '0')
-    newPiece.global = { x: 3, y: 0 }
-    newPiece.parts = createFromPattern(
-      newPiece.pattern,
-      newPiece.global.x,
-      newPiece.global.y
-    )
-    return newPiece
-  }
+  let newPiece = {}
 
-  function getCoordinatesFromPattern(pattern, x, y) {
-    let coordinates = []
+  newPiece.pattern = piecePattern[index]
+  newPiece.class = [...newPiece.pattern.join('')].find(e => e !== '0')
+  newPiece.global = { x: 3, y: 0 }
+  let x = 0
+  console.log(newPiece.global)
+  
+  newPiece.parts = getCoordinatesFromPattern(piecePattern[index],3 ,0)
+  return newPiece
+}
 
-    pattern.forEach((e, i) => {
-      e.split('').forEach((el, il) => {
-        if (el !== '0') {
-          coordinates.push({ x: x + il, y: y + i })
-        }
-      })
+function getCoordinatesFromPattern(pattern, x, y) {
+  let coordinates = []
+
+  pattern.forEach((e, i) => {
+    e.split('').forEach((el, il) => {
+      if (el !== '0') {
+        coordinates.push({ x: x + il, y: y + i })
+      }
     })
-    return coordinates
-  }
-
-  function pieceQueueGenerator(array) {
-    return Array.from({length: 3}, () => Math.floor(Math.random() * 7))
-  }
-
-  const piecePattern = [
-    ['0000', '0oo0', '0oo0', '0000'],
-    ['0000', 'iiii', '0000', '0000'],
-    ['00l', 'lll', '000'],
-    ['j00', 'jjj', '000'],
-    ['0ss', 'ss0', '000'],
-    ['zz0', '0zz', '000'],
-    ['0t0', 'ttt', '000']
-  ]
+  })
+  return coordinates
+}
 
 
-  class Rectangle {
-    constructor(hauteur, largeur) {
-      this.hauteur = hauteur;
-      this.largeur = largeur;
-    }
-
-    piecePattern = [
-      ['0000', '0oo0', '0oo0', '0000'],
-      ['0000', 'iiii', '0000', '0000'],
-      ['00l', 'lll', '000'],
-      ['j00', 'jjj', '000'],
-      ['0ss', 'ss0', '000'],
-      ['zz0', '0zz', '000'],
-      ['0t0', 'ttt', '000']
-    ]
-  
-    get area() {
-      return this.calcArea();
-    }
-  
-    calcArea() {
-      return this.largeur * this.hauteur;
-    }
-  }
-
-  export { generatePiece, getCoordinatesFromPattern, pieceQueueGenerator, piecePattern, Rectangle }
+export { generatePiece, getCoordinatesFromPattern, piecePattern }

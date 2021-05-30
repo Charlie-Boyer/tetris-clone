@@ -1,6 +1,13 @@
 .piece-container {
-    height: 100px;
-    width: 100px;
-    display: flex;
-    flex-direction: column;
+  border: 3px solid white;
+  border-radius: 20px;
+  height: 100px;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.altCell {
+  width: 100%;
+  background-color: transparent;
 }
