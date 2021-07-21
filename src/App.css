@@ -32,7 +32,6 @@ div {
 .infos {
   font-size: 1rem;
   color: antiquewhite;
-
 }
 
 .board {
@@ -43,31 +42,32 @@ div {
   width: 45vh;
   display: flex;
   flex-direction: column;
-  background: rgb(54,81,219);
-  background: radial-gradient(circle, rgba(54,81,219,0.9304096638655462) 0%, rgba(36,50,115,1) 100%);
+  background: rgb(54, 81, 219);
+  background: radial-gradient(
+    circle,
+    rgba(54, 81, 219, 0.9304096638655462) 0%,
+    rgba(36, 50, 115, 1) 100%
+  );
 }
 
 .row {
   display: flex;
   height: 100%;
-
 }
 
 .cell {
   width: 100%;
-  box-shadow: 1px 0px 3px 1px rgba(194,209,235,0.1);
+  box-shadow: 1px 0px 3px 1px rgba(194, 209, 235, 0.1);
 }
 
-[class*="block"]{
+[class*='block'] {
   border-radius: 5px;
-  box-shadow: inset 3px 0px rgba(0,0,0,.3),
-  inset -3px 0px rgba(0,0,0,.3),
-  inset 0px 3px rgba(255,255,255,.5),
-  inset 0px -3px rgba(0,0,0,.6);
+  box-shadow: inset 3px 0px rgba(0, 0, 0, 0.3),
+    inset -3px 0px rgba(0, 0, 0, 0.3), inset 0px 3px rgba(255, 255, 255, 0.5),
+    inset 0px -3px rgba(0, 0, 0, 0.6);
   width: 100%;
   background-color: transparent;
 }
-
 
 .i-block {
   background-color: #00d0d0;
@@ -91,18 +91,18 @@ div {
   background-color: #d00000;
 }
 
-
-
-
-
-
-
 .x-block {
   background-color: transparent;
   animation: clear 300ms linear forwards;
 }
 
 @keyframes clear {
-  from  {transform: scale(0);}
-  to    {transform: scale(1.5); background-color: white; opacity: 0;}
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1.5);
+    background-color: white;
+    opacity: 0;
+  }
 }
